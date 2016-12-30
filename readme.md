@@ -4,6 +4,8 @@ Allows for easy implementation of smooth scrolling for same-page links.
 
 [![NPM](https://nodei.co/npm/jquery-smooth-scroll.png?compact=true)](https://npmjs.org/package/jquery-smooth-scroll)
 
+Note: Version 2.0+ of this plugin requires jQuery version 1.7 or greater.
+
 ## Download
 
 Using npm:
@@ -30,10 +32,9 @@ You can try a bare-bones demo at [kswedberg.github.io/jquery-smooth-scroll/demo/
 * Exclude links if they are within a containing element: `$('#container a').smoothScroll({excludeWithin: ['.container2']});`
 * Exclude links if they match certain conditions: `$('a').smoothScroll({exclude: ['.rough','#chunky']});`
 * Adjust where the scrolling stops: `$('.backtotop').smoothScroll({offset: -100});`
-* Add a callback function that is triggered before the scroll starts: `$('a').smoothScroll({beforeScroll: function() { alert('ready to go!'); }});
+* Add a callback function that is triggered before the scroll starts: `$('a').smoothScroll({beforeScroll: function() { alert('ready to go!'); }});`
 * Add a callback function that is triggered after the scroll is complete: `$('a').smoothScroll({afterScroll: function() { alert('we made it!'); }});`
-* Add back button support by including a history management plugin such as [Ben Alman's BBQ](http://benalman.com/code/projects/jquery-bbq/docs/files/jquery-ba-bbq-js.html). See [demo/bbq.html](demo/bbq.html) for an example of how to implement this.
-
+* Add back button support by using a [`hashchange` event listener](https://developer.mozilla.org/en-US/docs/Web/API/HashChangeEvent). You can also include a history management plugin such as [Ben Alman's BBQ](http://benalman.com/code/projects/jquery-bbq/docs/files/jquery-ba-bbq-js.html) for ancient browser support (IE &lt; 8), but you'll need jQuery 1.8 or earlier. See [demo/hashchange.html](demo/hashchange.html) or [demo/bbq.html](demo/bbq.html) for an example of how to implement.
 
 #### Options
 
@@ -49,7 +50,7 @@ The following options, shown with their default values, are available for both `
   // only use if you want to override default behavior
   scrollTarget: null,
 
-  // string to use as selector for event delegation (Requires jQuery >=1.4.2)
+  // string to use as selector for event delegation
   delegateSelector: null,
 
   // fn(opts) function to be called before scrolling occurs.
@@ -59,6 +60,9 @@ The following options, shown with their default values, are available for both `
   // fn(opts) function to be called after scrolling occurs.
   // `this` is the triggering element
   afterScroll: function() {},
+
+  // easing name. jQuery comes with "swing" and "linear." For others, you'll need an easing plugin
+  // from jQuery UI or elsewhere
   easing: 'swing',
 
   // speed can be a number or 'auto'
@@ -142,7 +146,7 @@ for `$.smoothScroll`:
 
 ### Smooth scrolling on page load
 
-If you want to scroll to an element when the page loads, use `$.smoothScroll()` in a script at the end of the body or use `$(document).ready()`. To prevent the browser from automatically scrolling to the element on its own, your link on page 1 will need to include a fragment identifier that does _not_ match an element id on page 2. To ensure that users without JavaScript get to the same element, you should modify the link's hash on page 1 with JavaScript. Your script on page 2 will then modify it back to the correct one when you call `$.smoothScroll()`. 
+If you want to scroll to an element when the page loads, use `$.smoothScroll()` in a script at the end of the body or use `$(document).ready()`. To prevent the browser from automatically scrolling to the element on its own, your link on page 1 will need to include a fragment identifier that does _not_ match an element id on page 2. To ensure that users without JavaScript get to the same element, you should modify the link's hash on page 1 with JavaScript. Your script on page 2 will then modify it back to the correct one when you call `$.smoothScroll()`.
 
 For example, let's say you want to smooth scroll to `<div id="scrolltome"></div>` on page-2.html. For page-1.html, your script might do the following:
 
@@ -155,7 +159,7 @@ $('a[href="page-2.html#scrolltome"]').attr('href', function() {
 
 ```
 
-Then for page-2.html, your script would do this: 
+Then for page-2.html, your script would do this:
 
 ```js
 // Call $.smoothScroll if location.hash starts with "#smoothScroll"
